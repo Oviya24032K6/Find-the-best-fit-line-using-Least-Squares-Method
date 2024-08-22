@@ -26,26 +26,57 @@ RegisterNumber:  212223110033
 ```
 ```
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
-X=np.array(eval(input()))
-Y=np.array(eval(input()))
-Xmean=np.mean(X)
-Ymean=np.mean(Y)
-num,den=0,0 # num = numerator, den = denomenator
-for i in range(len(X)):
-  num+=(X[i]-Xmean)*(Y[i]-Ymean)
-  den+=(X[i]-Xmean)**2
-m=num/den
-c=Ymean-m*Xmean
-print(m,c)
-Y_pred=m*X+c
-print(Y_pred)
-plt.scatter(X,Y)
-plt.plot(X,Y_pred,color="red")
+
+# Load dataset from CSV
+data = pd.read_csv('student_scores123.csv')
+
+# Splitting the combined column into 'Hours' and 'Scores'
+data[['Hours', 'Scores']] = data['Hours\tScores'].str.split('\t', expand=True)
+
+# Convert to numeric data types
+data['Hours'] = pd.to_numeric(data['Hours'])
+data['Scores'] = pd.to_numeric(data['Scores'])
+
+# Use the correct column names
+X = data['Hours'].values
+Y = data['Scores'].values
+
+# Calculate means
+Xmean = np.mean(X)
+Ymean = np.mean(Y)
+
+# Calculate coefficients
+num = np.sum((X - Xmean) * (Y - Ymean))
+den = np.sum((X - Xmean) ** 2)
+m = num / den
+c = Ymean - m * Xmean
+
+# Print coefficients
+print(f"Slope (m): {m:.4f}")
+print(f"Intercept (c): {c:.4f}")
+
+# Predict Y values
+Y_pred = m * X + c
+
+# Print predicted Y values
+print("Predicted Y values:", Y_pred)
+
+# Plotting
+plt.scatter(X, Y, color="blue", label="Data points")
+plt.plot(X, Y_pred, color="red", label="Regression line")
+plt.xlabel("Hours")
+plt.ylabel("Scores")
+plt.title("Univariate Linear Regression")
+plt.legend()
 plt.show()
+
 ```
 ## Output:
-![image](https://github.com/user-attachments/assets/26204cf1-e815-4b1d-aee7-dc73f08cf4a2)
+![image](https://github.com/user-attachments/assets/f6b535b6-53a3-4116-bb7d-b94b8f7c257e)
+![image](https://github.com/user-attachments/assets/c44efdc6-eb73-4629-a465-e3b77582f02e)
+
 
 
 ## Result:
